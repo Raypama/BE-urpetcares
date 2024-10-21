@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/users' ,getUser )
 router.get('/users/:id' ,checkAuth,getUserById )
-router.patch('/users' ,checkAuth,editUser )
+router.patch('/users/:id' ,checkAuth,fileUpload("image"),editUser )
 router.delete('/users/:id',checkAuth ,deleteUser )
 router.post('/register',fileUpload("image") ,register )
 router.post('/login' ,login )
