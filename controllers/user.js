@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const deleteFile = require('../middlewares/deleteFile');
 const fs = require('fs');
+const { log } = require('console');
 
 
 // ======================================================================================
@@ -46,8 +47,8 @@ exports.register = async (req, res) => {
 
         res.status(201).json({ //status insert biasanya 201
             statusCode: 201,
-            users: responseUser,
-            massage: "User registered successfully"
+            massage: "User registered successfully",
+            users: responseUser
         })
 
     } catch (error) {
@@ -97,8 +98,6 @@ exports.login = async (req, res) => {
             phone: users.phone
         }, secretKey, { expiresIn: '2h' })
 
-        console.log("SECRET_KEY saat verifikasi token:", process.env.SECRET_KEY);
-
 
         res.status(201).json({ //status insert biasanya 201
             statusCode: 201,
@@ -124,9 +123,9 @@ exports.login = async (req, res) => {
 }
 
 
-// ======================================================================================
-const pathFile = 'http://localhost:8000/uploads/'
 
+// ======================================================================================
+const pathFile = process.env.PATH_URL_IMG
 
 exports.getUser = async (req, res) => {
 
@@ -245,56 +244,36 @@ exports.editUser = async (req, res) => {
 
         // Jika ada file baru (foto baru di-upload)
         if (req.file) {
-            // Hapus foto lama jika ada
-            if (findUser.photo) {
-                const oldPhoto = findUser.photo.replace(pathFile, ''); // Menghapus path URL dari nama file
-                const oldPhotoPath = `./uploads/${oldPhoto}`; // Lokasi file foto lama
-
-                if (fs.existsSync(oldPhotoPath)) {
-                    fs.unlinkSync(oldPhotoPath); // Hapus foto lama dari folder uploads
-                }
-            }
-
-            // Update dengan foto baru
-            editUser.photo = pathFile + req.file.filename;
+            deleteFile(findUser.photo)
         }
-
+        // req.file && deleteFile(findUser.photo) ;
+        
         // Lakukan update ke database
-        const result = await User.update(editUser, { where: { id: ID } })
-// console.log(result);
+        // const result = await User.update(editUser, { where: { id: ID } })
+        // console.log(result);
 
-const updatedUser = await User.findOne({ where: { id: ID } });
+        const updatedUser = await User.findOne({ where: { id: ID } });
 
-if (updatedUser) {
-    res.status(200).json({
-        statusCode: 200,
-        message: "Users updated successfully",
-        data: {
-            id: updatedUser.id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            phone: updatedUser.phone,
-            address: updatedUser.address,
-            photo: updatedUser.photo, // Sudah termasuk photo yang baru jika ada
-            role: updatedUser.role
+        if (updatedUser) {
+            res.status(200).json({
+                statusCode: 200,
+                message: "Users updated successfully",
+                data: {
+                    id: updatedUser.id,
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                    phone: updatedUser.phone,
+                    address: updatedUser.address,
+                    photo: updatedUser.photo, // Sudah termasuk photo yang baru jika ada
+                    role: updatedUser.role
+                }
+            });
+        } else {
+            res.status(404).json({
+                statusCode: 404,
+                message: `user id = ${ID} is not found (unsuccesfully)`,
+            });
         }
-    });
-} else {
-    res.status(404).json({
-        statusCode: 404,
-        message: `user id = ${ID} is not found (unsuccesfully)`,
-    });
-}
-        // if (findUser) {
-
-        //     findUser.photo = pathFile + findUser.photo
-
-        //     res.status(200).json({
-        //         statusCode: 200,
-        //         message: "Users updated successfully",
-        //         data: result
-        //     });
-        // } 
 
 
     } catch (error) {

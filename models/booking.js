@@ -44,15 +44,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    date: DataTypes.DATE,
-    time: {
-      type: DataTypes.STRING,  //Menggunakan STRING untuk menyimpan waktu tanpa detik
-      allowNull: false,
-      validate: {
-        is: /^([0-1]\d|2[0-3]):([0-5]\d)$/  
-        //Validasi format 'HH:mm' (tanpa detik)
-      }
-    },
+    date: DataTypes.DATEONLY,
+    time: DataTypes.TIME,
     quantity: DataTypes.INTEGER,
     totalPrice: DataTypes.FLOAT,
     status: {

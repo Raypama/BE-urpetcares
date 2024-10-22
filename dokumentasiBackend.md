@@ -1,0 +1,1 @@
+fs (singkatan dari File System) adalah modul bawaan di Node.js yang digunakan untuk bekerja dengan sistem file, seperti membaca, menulis, menghapus, atau memanipulasi file dan direktori di server.

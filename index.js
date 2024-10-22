@@ -11,7 +11,7 @@ app.use('/uploads', express.static('uploads')) // untuk buat path file upload
 app.use(express.json())//berfungsi untuk nangkap request body dari method post
 app.use(router);
 
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 
-app.listen(PORT, () => console.log('server is a running'));
+app.listen(PORT, () => console.log(`server is a running on port ${PORT}`));

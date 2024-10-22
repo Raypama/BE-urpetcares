@@ -1,6 +1,6 @@
 const passport = require('../lib/passport');
 
-console.log("test");
+// console.log("test");
 
 const checkAuth = passport.authenticate('jwt', { session: false })
 

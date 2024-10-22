@@ -26,10 +26,10 @@ module.exports = {
         }
       },
       date: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       time: {
-        type: Sequelize.STRING
+        type: Sequelize.TIME
       },
       quantity: {
         type: Sequelize.INTEGER
