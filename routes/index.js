@@ -2,7 +2,8 @@ const express = require ("express"); //import same as on react
 //=====export dari controllers=======
 const { getUser, getUserById, editUser, register, login, deleteUser } = require("../controllers/user");
 const { insertService, getServiceById, getService, updateService, deleteService } = require("../controllers/service");
-const { getBooking, createBooking, getBookingById } = require("../controllers/booking");
+const { getBooking, createBooking, getBookingById, deleteBooking, updateBooking } = require("../controllers/booking");
+const { createTransaction, getTransaction, getTransactionById, updateTransaction } = require("../controllers/transaction");
 //-----------------------------------------------------------------------------------
 const fileUpload = require("../middlewares/uploadFile");
 const checkAuth = require("../middlewares/checkAuth");
@@ -13,9 +14,9 @@ const router = express.Router();
 //Users
 router.get('/users' ,getUser )
 router.get('/users/:id' ,checkAuth,getUserById )
-router.patch('/users/:id' ,checkAuth,fileUpload("image"),editUser )
+router.patch('/users/:id' ,checkAuth,fileUpload("photo"),editUser )
 router.delete('/users/:id',checkAuth ,deleteUser )
-router.post('/register',fileUpload("image") ,register )
+router.post('/register',fileUpload("photo") ,register )
 router.post('/login' ,login )
 //===============================================================================
 
@@ -31,8 +32,14 @@ router.delete('/service/:id',checkAuth ,deleteService )
 router.get('/booking' , getBooking )
 router.get('/booking/:id' ,checkAuth, getBookingById )
 router.post('/booking' ,checkAuth, createBooking )
-// router.patch('/service/:id' ,checkAuth, updateBo )
+router.patch('/booking/:id' ,checkAuth, updateBooking )
+router.delete('/booking/:id',checkAuth ,deleteBooking )
+//===============================================================================
 
-
+// //Transactions
+router.get('/transaction' , getTransaction )
+router.post('/transaction' , checkAuth ,fileUpload("receipt"),createTransaction )
+router.get('/transaction/:id' ,checkAuth, getTransactionById )
+router.patch('/transaction/:id' ,checkAuth, updateTransaction )
 
 module.exports = router

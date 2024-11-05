@@ -9,7 +9,9 @@ app.use(cors());
 app.use('/uploads', express.static('uploads')) // untuk buat path file upload
 
 app.use(express.json())//berfungsi untuk nangkap request body dari method post
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
+
 
 const PORT = process.env.PORT || 8000
 

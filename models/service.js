@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Service.hasMany(Booking, {
         foreignKey: 'serviceId',
-        as: 'bookings'
+        as: 'booking'
       });
     }
   }

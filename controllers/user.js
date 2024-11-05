@@ -2,8 +2,8 @@ const { User, Booking, Service } = require('../models')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const deleteFile = require('../middlewares/deleteFile');
-const fs = require('fs');
-const { log } = require('console');
+// const fs = require('fs');
+// const { log } = require('console');
 
 
 // ======================================================================================
@@ -196,7 +196,7 @@ exports.getUserById = async (req, res) => {
 
             findUser.photo = pathFile + findUser.photo
 
-            res.status(200).json({
+            return res.status(200).json({
                 statusCode: 200,
                 message: "Users get successfully",
                 data: findUser
@@ -221,61 +221,52 @@ exports.getUserById = async (req, res) => {
 // ======================================================================================
 
 exports.editUser = async (req, res) => {
-    const ID = parseInt(req.params.id)
+    const ID = parseInt(req.params.id);
+    console.log(req.body);
+    
     try {
         const findUser = await User.findOne({ where: { id: ID } });
         if (!findUser) {
-            res.status(404).json({
+            return res.status(404).json({
                 statusCode: 404,
-                message: `user id = ${ID} is not found (unsuccesfully)`,
+                message: `user id = ${ID} is not found (unsuccessfully)`,
             });
         }
 
-        // update si data
+        // Jika ada file baru (foto baru di-upload), hapus foto lama terlebih dahulu
+        if (req.file && findUser.photo) {
+            console.log("Deleting old file:", findUser.photo);  // Tambahkan log untuk pengecekan
+            deleteFile(findUser.photo);  // Hapus foto lama
+        }
+
+        // Update data user dengan foto baru (atau tetap gunakan foto lama jika tidak ada file baru)
         const editUser = {
             name: req.body.name,
             email: req.body.email,
             phone: req.body.phone,
             address: req.body.address,
-            photo: pathFile + req.file.filename,
+            photo: req.file ? req.file.filename : findUser.photo,  // Gunakan nama file saja
             role: req.body.role
-        }
+        };
 
-
-        // Jika ada file baru (foto baru di-upload)
-        if (req.file) {
-            deleteFile(findUser.photo)
-        }
-        // req.file && deleteFile(findUser.photo) ;
-        
         // Lakukan update ke database
-        // const result = await User.update(editUser, { where: { id: ID } })
-        // console.log(result);
+        await User.update(editUser, { where: { id: ID } });
 
         const updatedUser = await User.findOne({ where: { id: ID } });
 
-        if (updatedUser) {
-            res.status(200).json({
-                statusCode: 200,
-                message: "Users updated successfully",
-                data: {
-                    id: updatedUser.id,
-                    name: updatedUser.name,
-                    email: updatedUser.email,
-                    phone: updatedUser.phone,
-                    address: updatedUser.address,
-                    photo: updatedUser.photo, // Sudah termasuk photo yang baru jika ada
-                    role: updatedUser.role
-                }
-            });
-        } else {
-            res.status(404).json({
-                statusCode: 404,
-                message: `user id = ${ID} is not found (unsuccesfully)`,
-            });
-        }
-
-
+        res.status(200).json({
+            statusCode: 200,
+            message: "User updated successfully",
+            data: {
+                id: updatedUser.id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                phone: updatedUser.phone,
+                address: updatedUser.address,
+                photo: process.env.PATH_URL_IMG + updatedUser.photo,  // Sudah termasuk photo yang baru jika ada
+                role: updatedUser.role
+            }
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({

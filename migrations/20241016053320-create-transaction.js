@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       payment: {
-        type: Sequelize.ENUM('transfer','wallet'),
+        type: Sequelize.ENUM('transfer','wallet','cash'),
         defaultValue: 'transfer'
       },
       receipt: {

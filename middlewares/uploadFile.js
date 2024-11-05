@@ -36,7 +36,7 @@ const fileUpload = (imageFile) => {
         storage: storage,
         fileFilter: fileFilter,
         limits: { fileSize: maxSizeMb } 
-    }).single('photo')
+    }).single(imageFile)
 
     return (req, res, next) => {
 
@@ -49,11 +49,11 @@ const fileUpload = (imageFile) => {
             }
 
             // kondisi jika file wajib diisi
-            if (!req.file && !err) {
-                return res.status(400).json({
-                    message: 'Image is required!'
-                })
-            }
+            // if (!req.file && !err) {
+            //     return res.status(400).json({
+            //         message: 'Image is required!'
+            //     })
+            // }
 
             // console.log(req.file);
 

@@ -1,6 +1,8 @@
 const { Service, Booking, User } = require('../models')
 
 
+// ======================================================================================
+
 exports.getBooking = async (req, res) => {
 
     try {
@@ -36,6 +38,7 @@ exports.getBooking = async (req, res) => {
     }
 }
 
+// ======================================================================================
 
 exports.createBooking = async (req, res) => {
 
@@ -53,7 +56,18 @@ exports.createBooking = async (req, res) => {
                 message: "Service not found",
             });
         }
+        const checkBooking = await Booking.findOne({
+            where: {date : date, time : time},
+        })
 
+        console.log(checkBooking);
+        if (checkBooking ) {
+            return res.status(404).json({
+                statusCode: 404,
+                message: "Booking already exist",
+            });
+        }
+        
         // Hitung totalPrice
         const totalPrice = quantity * service.price;
 
@@ -96,7 +110,7 @@ exports.createBooking = async (req, res) => {
     }
 }
 
-
+// ======================================================================================
 
 exports.getBookingById = async (req, res) => {
     const ID = parseInt(req.params.id)
@@ -144,7 +158,118 @@ exports.getBookingById = async (req, res) => {
 }
 
 
+// ======================================================================================
+
+exports.updateBooking = async (req, res) => {
+    const ID = parseInt(req.params.id);
+
+    try {
+        const { status, quantity, serviceId, date, time } = req.body;
+        
+        // Cari booking berdasarkan ID
+        const findBooking = await Booking.findOne({ where: { id: ID } });
+        if (!findBooking) {
+            return res.status(404).json({
+                statusCode: 404,
+                message: `Booking id = ${ID} is not found (unsuccessfully)`,
+            });
+        }
+
+        // Cari service untuk mendapatkan harga
+        const service = await Service.findOne({ where: { id: serviceId } });
+        if (!service) {
+            return res.status(404).json({
+                statusCode: 404,
+                message: `Service id = ${serviceId} is not found`,
+            });
+        }
+
+        // Hitung totalPrice
+        const totalPrice = parseInt(quantity) * service.price;
+
+        // Update data di database
+        await Booking.update(
+            { status, quantity, date, time, totalPrice, serviceId },
+            { where: { id: ID } }
+        );
+
+        // Mengambil data booking yang di-update
+        const updatedBooking = await Booking.findOne({ where: { id: ID } });
+
+        res.status(200).json({
+            statusCode: 200,
+            message: "Booking updated successfully",
+            data: {
+                id: updatedBooking.id,
+                date: updatedBooking.date,
+                time: updatedBooking.time,
+                status: updatedBooking.status,
+                quantity: updatedBooking.quantity,
+                totalPrice: updatedBooking.totalPrice,
+                userId: updatedBooking.userId,
+                serviceId: updatedBooking.serviceId
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            statusCode: "500",
+            message: "Server error",
+            error: error.message
+        });
+    }
+}
 
 
 
 
+
+// ======================================================================================
+
+exports.deleteBooking = async (req, res) => {
+
+    const ID = parseInt(req.params.id)
+    try {
+        const result = await Booking.findOne({ where: { id: ID } })
+        // console.log(result);
+
+        if (!result) {
+            return res.status(404).json({
+                statusCode: 404,
+                message: `id ${ID} not found`
+            })
+        }
+
+        await Booking.destroy({
+            where: {
+                id: ID,
+            },
+        });
+
+
+        return res.status(200).json({
+            statusCode: 200,
+            message: "Booking deleted successfully"
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            statusCode: "500",
+            message: "Server error/ unsuccesfully",
+            error: error.message
+        });
+    }
+}
+
+
+
+
+// transaction.status === 'pending'
+// ? booking.status = upcoming
+// : transaction.status === 'ongoing'
+// ? booking.status = 'ongoing'
+// : transaction.status === 'success'
+// ? booking.status = 'complete'
+// : transaction.status === 'failed'
+// ? booking.status = 'cancelled'
+// : console.log('status null')

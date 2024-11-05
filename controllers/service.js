@@ -1,7 +1,7 @@
 const { Service } = require('../models')
 
 
-
+// ======================================================================================
 
 exports.insertService = async (req, res) => {
 
@@ -37,6 +37,10 @@ exports.insertService = async (req, res) => {
     }
 }
 
+
+
+// ======================================================================================
+
 exports.getService = async (req, res) => {
     try {
         //buat ambil semua data kita tetep pake find all
@@ -65,7 +69,7 @@ exports.getService = async (req, res) => {
     }
 }
 
-
+// ======================================================================================
 
 exports.getServiceById = async (req, res) => {
     const ID = parseInt(req.params.id)
@@ -111,6 +115,9 @@ exports.getServiceById = async (req, res) => {
     }
 }
 
+
+// ======================================================================================
+
 exports.updateService = async (req, res) => {
     const ID = parseInt(req.params.id);
 
@@ -153,7 +160,7 @@ exports.updateService = async (req, res) => {
     }
 }
 
-
+// ======================================================================================
 exports.deleteService = async (req, res) => {
 
     const ID = parseInt(req.params.id)

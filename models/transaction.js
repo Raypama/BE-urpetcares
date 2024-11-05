@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      const {Booking} = models;
+      const { Booking } = models;
 
       Transaction.belongsTo(Booking, {
         foreignKey: 'bookingId',
@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    payment:{
-      type: DataTypes.ENUM('transfer','wallet'),
+    payment: {
+      type: DataTypes.ENUM('transfer', 'wallet', 'cash'),
       defaultValue: 'transfer'
     },
     receipt: DataTypes.STRING,
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.NOW,
     },
     status: {
-      type: DataTypes.ENUM('pending','success','failed'),
+      type: DataTypes.ENUM('pending', 'success', 'failed'),
       defaultValue: 'pending'
     },
   }, {
