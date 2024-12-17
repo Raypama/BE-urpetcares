@@ -7,6 +7,7 @@ const { createTransaction, getTransaction, getTransactionById, updateTransaction
 //-----------------------------------------------------------------------------------
 const fileUpload = require("../middlewares/uploadFile");
 const checkAuth = require("../middlewares/checkAuth");
+const { verifyToken } = require("../controllers/verifyToken");
 const router = express.Router();
 
 //===============================================================================
@@ -41,5 +42,8 @@ router.get('/transaction' , getTransaction )
 router.post('/transaction' , checkAuth ,fileUpload("receipt"),createTransaction )
 router.get('/transaction/:id' ,checkAuth, getTransactionById )
 router.patch('/transaction/:id' ,checkAuth, updateTransaction )
+
+
+router.get('/verify-token', checkAuth, verifyToken)
 
 module.exports = router

@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "postgres",
+    "password": "as12",
     "database": "apiBooking",
     "host": "127.0.0.1",
     "dialect": "postgres"

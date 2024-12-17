@@ -215,19 +215,12 @@ exports.updateTransaction = async (req, res) => {
 
         const updatedTransaction = await Transaction.findOne({ where: { id: ID } });
 
-        if (editTransaction.status === "success") {
+        if (editTransaction.status === "success" || editTransaction.status === "failed") {
             const bookingId = updatedTransaction.bookingId;
             const findBooking = await Booking.findOne({ where: { id: bookingId } });
             if (findBooking) {
-                await Booking.update({ status: "upcoming" }, { where: { id: bookingId } });
-            }
-        }
-        
-        if (editTransaction.status === "failed") {
-            const bookingId = updatedTransaction.bookingId;
-            const findBooking = await Booking.findOne({ where: { id: bookingId } });
-            if (findBooking) {
-                await Booking.update({ status: "cancelled" }, { where: { id: bookingId } });
+                const newStatus = editTransaction.status === "success" ? "upcoming" : "cancelled";
+                await Booking.update({ status: newStatus }, { where: { id: bookingId } });
             }
         }
 
