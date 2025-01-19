@@ -1,6 +1,6 @@
 const express = require ("express"); //import same as on react
 //=====export dari controllers=======
-const { getUser, getUserById, editUser, register, login, deleteUser } = require("../controllers/user");
+const { getUser, getUserById, editUser, register, login, deleteUser, handleEmail } = require("../controllers/user");
 const { insertService, getServiceById, getService, updateService, deleteService } = require("../controllers/service");
 const { getBooking, createBooking, getBookingById, deleteBooking, updateBooking } = require("../controllers/booking");
 const { createTransaction, getTransaction, getTransactionById, updateTransaction } = require("../controllers/transaction");
@@ -43,7 +43,8 @@ router.post('/transaction' , checkAuth ,fileUpload("receipt"),createTransaction 
 router.get('/transaction/:id' ,checkAuth, getTransactionById )
 router.patch('/transaction/:id' ,checkAuth, updateTransaction )
 
-
+//add front-end
 router.get('/verify-token', checkAuth, verifyToken)
+router.get('/check-email', handleEmail)
 
 module.exports = router
