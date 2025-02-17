@@ -9,20 +9,27 @@ const deleteFile = require("../middlewares/deleteFile");
 exports.register = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: "Email and password are required",
+      });
+    }
     const saltRound = 10; //waktu hash/encrypt password perdetik -10 hash perdetik
     const encryptPassword = bcrypt.hashSync(password, saltRound);
-    const photo = req.file.filename ? req.file.filename : null;
+    const photo = req.file? req.file.filename : null;
     // console.log(password, 'without encrypt');
     // console.log(encryptPassword, 'with encrypt');
     // console.log(req.file.filename);
 
     const newUser = {
-      name,
+      name: name || null,
       email,
       password: encryptPassword,
-      phone,
-      address,
-      photo: photo,
+      phone: phone || null, // Default null jika tidak diisi
+      address: address || null, // Default null jika tidak diisi
+      photo
+
     };
     // console.log(photo);
 
@@ -233,7 +240,7 @@ exports.getUserById = async (req, res) => {
 
 exports.editUser = async (req, res) => {
   const ID = parseInt(req.params.id);
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const findUser = await User.findOne({ where: { id: ID } });
