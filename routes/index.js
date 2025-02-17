@@ -34,7 +34,7 @@ const {
 const fileUpload = require("../middlewares/uploadFile");
 const checkAuth = require("../middlewares/checkAuth");
 const { verifyToken } = require("../controllers/verifyToken");
-const { default: axios } = require("axios");
+const { getNewsBlog } = require("../controllers/news");
 const router = express.Router();
 
 //===============================================================================
@@ -80,17 +80,8 @@ router.patch("/transaction/:id", checkAuth, updateTransaction);
 router.get("/verify-token", checkAuth, verifyToken);
 router.get("/check-email", handleEmail);
 
-const API_KEY =
-  "31f0b4445cfd64e9373f943837fd32a8283fc961cb62964c8a7f28052fb0beec";
-router.get("/news", async (req, res) => {
-  try {
-    const response = await axios.get(
-      `https://serpapi.com/search.json?hl=en&gl=us&engine=google_news&q=pets%20lovers&api_key=${API_KEY}`
-    );
-    res.json(response.data.news_results);
-  } catch (error) {
-    res.status(500).json({ error: "Gagal mengambil data" });
-  }
-});
+//add third party be berita news
+router.get("/news", getNewsBlog);
+ 
 
 module.exports = router;
