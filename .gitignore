@@ -1,4 +1,4 @@
-node_modules/
-dokumentasiBackend.md/
-# .env/
-.DS_Store/
+/node_modules
+/dokumentasiBackend.md
+# .env
+/.DS_Store
