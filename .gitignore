@@ -1,5 +1,4 @@
-node_modules
-dokumentasiBackend.md
-.env
-.DS_Store
-# uploads
+node_modules/
+dokumentasiBackend.md/
+.env/
+.DS_Store/
